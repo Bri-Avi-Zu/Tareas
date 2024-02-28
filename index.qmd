@@ -10,7 +10,6 @@
  ```{python}
  import datetime
  ```
-
  **Set some pandas options for controlling output** 
  ```{python}
  pd.set_option('display.notebook_repr_html', False)
@@ -67,6 +66,7 @@
 ```{python}
  df.isnull().sum()
  ```
+
  **total count of NaN values**
  ```{python}
  df.isnull().sum().sum()
@@ -80,7 +80,7 @@
  (len(df) - df.count()).sum()
  ```
 **which items are not null?**
-```{python}
+ ```{python}
  df.notnull()
  ```
  # Selecting out or dropping missing data
