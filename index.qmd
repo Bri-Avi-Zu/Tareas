@@ -1,3 +1,117 @@
+
+# Setting up the IPython notebook
+**Import pandas, Numpy and datetime** 
 ```{python}
-1 + 1
-```
+ import numpy as np 
+ ```
+ ```{python}
+ import pandas as pd 
+ ```
+ ```{python}
+ import datetime
+ ```
+
+ **Set some pandas options for controlling output** 
+ ```{python}
+ pd.set_option('display.notebook_repr_html', False)
+ ```
+ ```{python}
+  pd.set_option('display.max_columns', 10)
+ ```
+ ```{python}
+  pd.set_option('display.max_rows', 10)
+ ```
+
+# Working with missing data
+**create a DataFrame with 5 rows and 3 columns** 
+ ```{python}
+ df = pd.DataFrame(np.arange(0, 15).reshape(5, 3),  
+ index=['a', 'b', 'c', 'd', 'e'],  
+ columns=['c1', 'c2', 'c3']) 
+ df 
+ ```
+
+**add some columns and rows to the DataFrame** 
+**column c4 with NaN values** 
+```{python}
+ df['c4'] = np.nan
+ ```
+
+**row 'f' with 15 through 18**
+  ```{python}
+ df.loc['f'] = np.arange(15, 19)
+ ```
+
+**row 'g' will all NaN**
+ ```{python}
+ df.loc['g'] = np.nan
+ ```
+
+**column 'C5' with NaN's**
+ ```{python}
+ df['c5'] = np.nan
+ ```
+
+**change value in col 'c4' row 'a'**
+ ```{python}
+ df.loc['a', 'c4'] = 20 #aquí es donde pasa el error, se solucionó  agregando .loc
+ df
+ ```
+
+ # Determining NaN values in Series and  DataFrame objects 
+**which items are NaN?** 
+```{python}
+ df.isnull() 
+ ```
+**count the number of NaN values in each column**
+```{python}
+ df.isnull().sum()
+ ```
+ **total count of NaN values**
+ ```{python}
+ df.isnull().sum().sum()
+ ```
+ **number of non-NaN values in each column**
+ ```{python}
+ df.count()
+ ```
+ **and this counts the number of NaN values too**
+ ```{python}
+ (len(df) - df.count()).sum()
+ ```
+**which items are not null?**
+```{python}
+ df.notnull()
+ ```
+ # Selecting out or dropping missing data
+ **select the non-NaN items in column c4**
+ ```{python}
+ df.c4[df.c4.notnull()]
+ ```
+ **dropna will also return non NaN values**
+ **this gets all non NaN items in column c4**
+ ```{python}
+  df.c4.dropna() 
+ ```
+ **dropna returns a copy with the values dropped**
+ **the source DataFrame / column is not changed**
+ ```{python}
+ df.c4
+ ```
+ **on a DataFrame this will drop entire rows where there is at least one NaN, in this case, that is all rows**
+ ```{python}
+ df.dropna()
+ ```
+ **using how='all', only rows that have all values as NaN will be dropped**
+ ```{python}
+ df.dropna(how = 'all')
+ ```
+
+
+
+
+
+
+
+
+ 
