@@ -132,6 +132,96 @@ print(df)
  df.dropna(thresh=5, axis=1)
  ```
 # How pandas handles NaN values in  mathematical operations
+**create a NumPy array with one NaN value** 
+```{python}
+ a = np.array([1, 2, np.nan, 3])
+ ```
+**create a Series from the array** 
+ ```{python}
+ s = pd.Series(a) 
+ ```
+**the mean of each is different**
+```{python}
+  a.mean(), s.mean()
+ ```
+ **demonstrate sum, mean and cumsum handling of NaN** 
+ **get one column:**
+ ```{python}
+  s = df.c4
+  s.sum() # NaN values treated as 0
+ ```
+```{python}
+ s.mean() # NaN also treated as 0 
+ ```
+ **as 0 in the cumsum, but NaN values preserved in result Series**
+```{python}
+ s.cumsum()
+ ```
+ **# in arithmetic, a NaN value will result in NaN**
+```{python}
+ df.c4 + 1
+ ```
+# Filling in missing data
+**return a new DataFrame with NaN values filled with 0**
+```{python}
+ filled = df.fillna(0)
+ filled
+ ```
+**NaNs don't count as an item in calculating # the means**
+ ```{python}
+ df.mean()
+ ```
+**having replaced NaN with 0 can make operations such as mean have different results**
+ ```{python}
+ filled.mean()
+ ```
+**only fills the first two NaN values in each row with 0**
+```{python}
+ df.fillna(0, limit=2)
+ ```
+# Forward and backward flling of missing  values
+**extract the c4 column and fill NaNs forward** 
+```{python}
+ df.c4.fillna(method="ffill")
+ ```
+**perform a backwards fill** 
+```{python}
+df.c4.fillna(method="bfill")
+ ```
+# Filling using index labels
+**create a new Series of values to be used to fill NaN values where the index label matches**
+```{python}
+ fill_values = pd.Series([100, 101, 102], index=['a', 'e', 'g'])  
+ fill_values
+ ```
+**using c4, fill using fill_values a, e and g will be filled with matching values** 
+```{python}
+ df.c4.fillna(fill_values)
+ ```
+**fill NaN values in each column with the mean of the values in that column** 
+```{python}
+ df.fillna(df.mean())
+ ```
+# Interpolation of missing values 
+**linear interpolate the NaN values from 1 through 2**
+```{python}
+s = pd.Series([1, np.nan, np.nan, np.nan, 2]) 
+s.interpolate()
+ ```
+
+ 
+
+
+
+
+
+ 
+
+
+
+  
+
+  
 
 
 
