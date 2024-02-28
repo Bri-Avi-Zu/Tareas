@@ -209,14 +209,172 @@ s = pd.Series([1, np.nan, np.nan, np.nan, 2])
 s.interpolate()
  ```
 
+**create a time series, but missing one date in the Series**
+```{python}
+ ts = pd.Series([1, np.nan, 2],  
+ index=[datetime.datetime(2014, 1, 1),  
+ datetime.datetime(2014, 2, 1),  
+ datetime.datetime(2014, 4, 1)]) 
+ ts 
+```
+**linear interpolate based on the number of items in the Series**
+ ```{python}
+  ts.interpolate() 
+```
+**this accounts for the fact that we don't have an entry for 2014-03-01** 
+```{python}
+  ts.interpolate(method="time") 
+ ```
+** a Series to demonstrate index label based interpolation**
+```{python}
+ s = pd.Series([0, np.nan, 100], index=[0, 1, 10]) 
+ s
+ ```
+**linear interpolate** 
+```{python}
+  s.interpolate()
+ ```
+**interpolate based upon the values in the index** 
+```{python}
+  s.interpolate(method="values") 
+ ```
+
+# Handling duplicate data
+**a DataFrame with lots of duplicate data**
+```{python}
+ data = pd.DataFrame({'a': ['x'] * 3 + ['y'] * 4,  
+ 'b': [1, 1, 2, 3, 3, 4, 4]}) 
+ data
+ ```
+**reports which rows are duplicates based upon if the data in all columns was seen before** 
+ ```{python}
+ data.duplicated()
+ ```
+**drop duplicate rows retaining first row of the duplicates**
+```{python}
+ data.drop_duplicates()
+ ```
+**drop duplicate rows, only keeping the first instance of any data** 
+```{python}
+ #data.drop_duplicates(take_last=True) da error,'take_last' argument was deprecated and removed in newer versions of pandas. Remplazo por:
+ data.drop_duplicates(keep='last')
+ ```
+**add a column c with values 0..6 this makes .duplicated() report no duplicate rows**
+ ```{python}
+ data['c'] = range(7)
+ data.duplicated() 
+ ```
+**but if we specify duplicates to be dropped only in columns a & b they will be dropped**
+ ```{python}
+  data.drop_duplicates(['a', 'b'])
+ ```
+# Mapping 
+**create two Series objects to demonstrate mapping**
+```{python}
+ x = pd.Series({"one": 1, "two": 2, "three": 3}) 
+ y = pd.Series({1: "a", 2: "b", 3: "c"}) 
+ x
+ ```
+```{python}
+ y
+ ```
+**map values in x to values in y** 
+```{python}
+ x.map(y)
+ ```
+**three in x will not align / map to a value in y** 
+```{python}
+ x = pd.Series({"one": 1, "two": 2, "three": 3}) 
+ y = pd.Series({1: "a", 2: "b"}) 
+ x.map(y) 
+ ```
+# Replacing values
+**create a Series to demonstrate replace**
+```{python}
+ s = pd.Series([0., 1., 2., 3., 2., 4.]) 
+ s
+ ``` 
+**replace all items with index label 2 with value 5**
+```{python}
+  s.replace(2, 5)
+ ```
+ **replace all items with new values** 
+ ```{python}
+  s.replace([0, 1, 2, 3, 4], [4, 3, 2, 1, 0])
+ ```
+**replace using entries in a dictionary** 
+```{python}
+ s.replace({0: 10, 1: 100})
+ ```
+**DataFrame with two columns**
+```{python}
+df = pd.DataFrame({'a': [0, 1, 2, 3, 4], 'b': [5, 6, 7, 8, 9]})
+print(df)
+ ```
+ **specify different replacement values for each column**
+ ```{python}
+  df.replace({'a': 1, 'b': 8}, 100)
+ ```
+**demonstrate replacement with pad method set first item to 10, to have a distinct replacement value**
+```{python}
+ s[0] = 10
+ s
+ ```
+**replace items with index label 1, 2, 3, using fill from the most recent value prior to the specified labels (10)**
+```{python}
+ s.replace([1, 2, 3], method='pad') #Recibí este warning:The 'method' keyword in Series.replace is deprecated and will be removed in a future version. FYI
+ ```
+# Applying functions to transform data
+**demonstrate applying a function to every item of a Series**
+```{python}
+  s = pd.Series(np.arange(0, 5)) 
+  s.apply(lambda v: v * 2)
+ ```
+**demonstrate applying a sum on each column**
+```{python}
+ df = pd.DataFrame(np.arange(12).reshape(4, 3),  
+ columns=['a', 'b', 'c']) 
+ df
+ ```
+**calculate cumulative sum of items in each column**
+```{python}
+ df.apply(lambda col: col.sum())
+ ```
+**calculate the sum of items in each row**
+```{python}
+  df.apply(lambda row: row.sum(), axis=1)
+ ```
+
+**create a new column 'interim' with a * b**
+```{python}
+ df['interim'] = df.apply(lambda r: r.a * r.b, axis=1)  
+ df
+ ```
+**and now a 'result' column with 'interim' + 'c'**
+ ```{python}
+ df['result'] = df.apply(lambda r: r.interim + r.c, axis=1)  
+ df
+ ```
+**replace column a with the sum of columns a, b and c**
+```{python}
+df.a = df.a + df.b + df.c
+df
+ ```
+**create a 3x5 DataFrame only second row has a NaN**
+```{python}
+ df = pd.DataFrame(np.arange(0, 15).reshape(3,5)) 
+ df.loc[1, 2] = np.nan 
+ df
+ ```
+**demonstrate applying a function to only rows having  # a count of 0 NaN values** 
+ ```{python}
+ df.dropna().apply(lambda x: x.sum(), axis=1)
+ ```
+**use applymap to format all items of the DataFrame** 
+```{python}
+ df.applymap(lambda x: '%.2f' % x) #FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.df.applymap(lambda x: '%.2f' % x. FYI profe ☺
+ ```
  
-
-
-
-
-
- 
-
 
 
   
